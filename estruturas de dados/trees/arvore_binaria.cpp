@@ -13,7 +13,7 @@ NodeTree* inserir(NodeTree *raiz, int dado);
 void inserirEficiente(NodeTree **raiz, int dado);
 // inserção sem retorno e sem recursão
 void inserirMaisEficiente(NodeTree **raiz, int dado);
-// 
+
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
