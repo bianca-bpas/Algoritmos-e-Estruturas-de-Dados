@@ -12,13 +12,13 @@ void printTabela(string *tabela);
 
 int main(){
     string tabela[m];
-    int t, n1;
+    int t, n;
     string temp, operation, word;
     cin >> t; // número de casos de teste
     for (int i = 0; i < t; i++){
         inicializarTabela(tabela);
-        cin >> n1; // número de operações
-        for (int j = 0; j < n1; j++){
+        cin >> n; // número de operações
+        for (int j = 0; j < n; j++){
             cin >> temp;
             operation = temp.substr(0, 3);
             word = temp.substr(4);
@@ -58,7 +58,7 @@ int searchTabela(string key, string *tabela){
     int indice = hashFunction(key);
     int originalIndice = indice;
     int j = 1;
-    while (tabela[indice] != "-1"){
+    for (int k = 0; k < 20 && (tabela[indice] != "-1" || tabela[indice] != "-2"); k++){
         if (tabela[indice] == key){
             return indice;
         } else {
@@ -70,6 +70,7 @@ int searchTabela(string key, string *tabela){
                 break;
             }
         }
+        
     }
     return -1;
 }
@@ -80,20 +81,20 @@ void insereTabela(string key, string *tabela){
         int j = 1;
         int indice = hashFunction(key);
         int originalIndice = indice;
-        while (tabela[indice] != "-1"){
+        while (tabela[indice] != "-1" && tabela[indice] != "-2"){
             if (j <= 19){
                 indice = originalIndice;
                 indice += (j * j + 23 * j);
                 indice %= m;
                 j++;
-                if (indice == originalIndice) {
+                if (j == 20) {
                     break;
                 }
             } else {
                 break;
             }  
         }
-        if (tabela[indice] == "-1"){
+        if (tabela[indice] == "-1" || tabela[indice] == "-2"){
             tabela[indice] = key;
             count++;
         }
@@ -103,14 +104,14 @@ void insereTabela(string key, string *tabela){
 void removeTabela(string key, string *tabela) {
     int pos = searchTabela(key, tabela);
     if (pos != -1) {
-        tabela[pos] = "-1";
+        tabela[pos] = "-2";
         count--;
     }
 }
 
 void printTabela(string *tabela){
     for (int i = 0; i < m; i++){
-        if (tabela[i] != "-1"){
+        if (tabela[i] != "-1" && tabela[i] != "-2"){
             cout << i << ":" << tabela[i] << endl;
         }
     }
