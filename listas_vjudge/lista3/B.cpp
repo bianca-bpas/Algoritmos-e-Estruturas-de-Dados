@@ -7,7 +7,7 @@ typedef struct NodeTree{
     struct NodeTree *direita;
 }NodeTree;
 
-NodeTree* insere(NodeTree *raiz, long int dado);
+void insere(NodeTree **raiz, int dado);
 void imprimirPreorder(NodeTree *raiz);
 void imprimirInorder(NodeTree *raiz);
 void imprimirPostorder(NodeTree *raiz);
@@ -20,7 +20,7 @@ int main(){
     cin >> n;
     for (int i = 0; i < n; i++){
         cin >> p;
-        raiz = insere(raiz, p);
+        insere(&raiz, p);
     }
     cout << "Pre order : ";
     imprimirPreorder(raiz);
@@ -33,21 +33,21 @@ int main(){
     return 0;
 }
 
-NodeTree* insere(NodeTree *raiz, long int dado){
-    if (raiz == NULL){
-        NodeTree *ptr = new NodeTree;
-        ptr->dado = dado;
-        ptr->esquerda = NULL;
-        ptr->direita = NULL;
-        return ptr;
-    } else {
-        if (dado < raiz->dado){
-            raiz->esquerda = insere(raiz->esquerda, dado);
+void insere(NodeTree **raiz, int dado){
+    NodeTree *ptr = *raiz;
+    while (ptr != NULL){
+        if (dado < ptr->dado){
+            raiz = &ptr->esquerda;
         } else {
-            raiz->direita = insere(raiz->direita, dado);
+            raiz = &ptr->direita;
         }
-        return raiz;
+        ptr = *raiz;
     }
+    ptr = new NodeTree;
+    ptr->dado = dado;
+    ptr->esquerda = NULL;
+    ptr->direita = NULL;
+    *raiz = ptr;
 }
 
 void imprimirPreorder(NodeTree *raiz){

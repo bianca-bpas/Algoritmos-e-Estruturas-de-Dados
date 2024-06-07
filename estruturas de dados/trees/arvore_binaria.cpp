@@ -14,6 +14,11 @@ void inserirEficiente(NodeTree **raiz, int dado);
 // inserção sem retorno e sem recursão
 void inserirMaisEficiente(NodeTree **raiz, int dado);
 
+// busca com recursão
+NodeTree* search(NodeTree* raiz, int dado);
+// busca sem recursão
+NodeTree* searchEficiente(NodeTree* raiz, int dado);
+
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
@@ -38,6 +43,34 @@ int main(){
     imprimirInorder(raiz);
     cout << endl << "Postorder (esquerda-direita-raiz)" << endl;
     imprimirPostorder(raiz);
+    NodeTree* busca = search(raiz, 40);
+    cout << endl;
+    if (busca != NULL){
+        cout << "Valor encontrado: " << busca->dado << endl;
+    } else {
+        cout << "Valor nao encontrado! " << endl;
+    }
+
+    busca = search(raiz, 45);
+    if (busca != NULL){
+        cout << "Valor encontrado: " << busca->dado << endl;
+    } else {
+        cout << "Valor 45 nao encontrado!" << endl;
+    }
+
+    busca = searchEficiente(raiz, 70);
+    if (busca != NULL){
+        cout << "Valor encontrado: " << busca->dado << endl;
+    } else {
+        cout << "Valor 70 nao encontrado!" << endl;
+    }
+
+    busca = searchEficiente(raiz, 75);
+    if (busca != NULL){
+        cout << "Valor encontrado: " << busca->dado << endl;
+    } else {
+        cout << "Valor 75 nao encontrado!" << endl;
+    }
 
     return 0;
 }
@@ -90,6 +123,32 @@ void inserirMaisEficiente(NodeTree **raiz, int dado){
     ptr->esquerda = NULL;
     ptr->direita = NULL;
     *raiz = ptr;
+}
+
+NodeTree* search(NodeTree* raiz, int dado){
+    if (raiz != NULL){
+        if (dado == raiz->dado){
+            return raiz;
+        } else if (dado < raiz->dado){
+            return search(raiz->esquerda, dado);
+        } else {
+            return search(raiz->direita, dado);
+        }
+    }
+    return NULL;
+}
+
+NodeTree* searchEficiente(NodeTree* raiz, int dado){
+    while (raiz != NULL){
+        if (dado < raiz->dado){
+            raiz = raiz->esquerda;
+        } else if (dado > raiz->dado){
+            raiz = raiz->direita;
+        } else {
+            return raiz;
+        }
+    }
+    return NULL;
 }
 
 void imprimirPreorder(NodeTree *raiz){
