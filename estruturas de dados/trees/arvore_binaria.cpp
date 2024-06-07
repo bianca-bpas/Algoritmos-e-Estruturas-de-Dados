@@ -19,6 +19,9 @@ NodeTree* search(NodeTree* raiz, int dado);
 // busca sem recursão
 NodeTree* searchEficiente(NodeTree* raiz, int dado);
 
+// verificar altura da árvore
+int alturaTree(NodeTree *raiz);
+
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
@@ -72,6 +75,8 @@ int main(){
         cout << "Valor 75 nao encontrado!" << endl;
     }
 
+    int a = alturaTree(raiz);
+    cout << "Altura da arvore: " << a << endl;
     return 0;
 }
 
@@ -150,6 +155,21 @@ NodeTree* searchEficiente(NodeTree* raiz, int dado){
     }
     return NULL;
 }
+
+int alturaTree(NodeTree *raiz){
+    if (raiz == NULL){
+        return -1;
+    } else {
+        int esq = alturaTree(raiz->esquerda);
+        int dir = alturaTree(raiz->direita);
+        if (esq > dir){
+            return esq + 1;
+        } else {
+            return dir +1;
+        }
+    }
+}
+
 
 void imprimirPreorder(NodeTree *raiz){
     if (raiz != NULL){
