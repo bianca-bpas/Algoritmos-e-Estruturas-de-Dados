@@ -21,9 +21,10 @@ NodeTree* searchEficiente(NodeTree* raiz, int dado);
 
 // verificar altura da árvore
 int alturaTree(NodeTree *raiz);
-
 // verificar quantidade de nós na árvore
 int quantidadeNodes(NodeTree *raiz);
+// verificar quantidade de folhas na árvore
+int quantidadeFolhas(NodeTree *raiz);
 
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
@@ -38,7 +39,7 @@ int main(){
     NodeTree *busca = NULL;
     int opcao, valor;
     do{
-        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl << "3 - Buscar" << endl << "4 - Altura" << endl << "5 - Tamanho" << endl << endl;
+        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl << "3 - Buscar" << endl << "4 - Altura" << endl << "5 - Tamanho" << endl  << "6 - Folhas" << endl << endl;
         cin >> opcao;
 
         switch (opcao){
@@ -71,6 +72,9 @@ int main(){
             break;
         case 5:
             cout << endl << "Quantidade de nos: " << quantidadeNodes(raiz) << endl;
+            break;
+        case 6:
+            cout << endl << "Quantidade de folhas: " << quantidadeFolhas(raiz) << endl;
             break;
         default:
             if (opcao != 0){
@@ -183,6 +187,15 @@ int quantidadeNodes(NodeTree *raiz){
     return (raiz ==NULL) ? 0 : (1 + quantidadeNodes(raiz->esquerda) + quantidadeNodes(raiz->direita));
 }
 
+int quantidadeFolhas(NodeTree *raiz){
+    if (raiz == NULL){
+        return 0;
+    } else if (raiz->esquerda == NULL && raiz->direita == NULL){
+        return 1;
+    } else {
+        return quantidadeFolhas(raiz->esquerda) + quantidadeFolhas(raiz->direita);
+    }
+}
 
 void imprimirPreorder(NodeTree *raiz){
     if (raiz != NULL){
