@@ -1,23 +1,33 @@
 #include <iostream>
 using namespace std;
 
+typedef struct Pessoa{
+    string nome;
+    int cpf;
+}Pessoa;
+
 typedef struct NodeTree{
-    int dado;
+    Pessoa pessoa;
     struct NodeTree *direita;
     struct NodeTree *esquerda;
 }NodeTree;
 
+// cria estrutura pessoa
+Pessoa criarPessoa();
+// imprime estrutura pessoa
+void imprimirPessoa(Pessoa p);
+
 // inserção com retorno e com recursão
-NodeTree* inserir(NodeTree *raiz, int dado);
+NodeTree* inserir(NodeTree *raiz, Pessoa p);
 // inserção sem retorno e com recursão
-void inserirEficiente(NodeTree **raiz, int dado);
+void inserirEficiente(NodeTree **raiz, Pessoa p);
 // inserção sem retorno e sem recursão
-void inserirMaisEficiente(NodeTree **raiz, int dado);
+void inserirMaisEficiente(NodeTree **raiz, Pessoa p);
 
 // busca com recursão
-NodeTree* search(NodeTree* raiz, int dado);
+NodeTree* search(NodeTree* raiz, int cpf);
 // busca sem recursão
-NodeTree* searchEficiente(NodeTree* raiz, int dado);
+NodeTree* searchEficiente(NodeTree* raiz, int cpf);
 
 // verificar altura da árvore
 int alturaTree(NodeTree *raiz);
@@ -47,9 +57,7 @@ int main(){
 
         switch (opcao){
         case 1:
-            cout << endl << "Digite um valor: ";
-            cin >> valor;
-            inserirMaisEficiente(&raiz, valor);
+            inserirMaisEficiente(&raiz, criarPessoa());
             break;
         case 2:
             cout << endl << "Preorder:" << endl;
@@ -61,11 +69,12 @@ int main(){
             cout << endl;
             break;
         case 3:
-            cout << endl << "Digite o valor a ser procurado: ";
+            cout << endl << "Digite o CPF a ser procurado: ";
             cin >> valor;
             busca = searchEficiente(raiz, valor);
             if (busca != NULL){
-                cout << endl << "Valor encontrado: " << busca->dado << endl;
+                cout << endl << "Valor encontrado: " << endl;
+                imprimirPessoa(busca->pessoa);
             } else {
                 cout << endl << "Valor nao encontrado!" << endl;
             }
@@ -83,7 +92,7 @@ int main(){
             cout << endl;
             imprimirInorder(raiz);
             cout << endl;
-            cout << endl << "Digite o valor a ser removido: ";
+            cout << endl << "Digite o CPF a ser removido: ";
             cin >> valor;
             raiz = removerNode(raiz, valor);
             break;
@@ -99,42 +108,58 @@ int main(){
 }
 
 
-NodeTree* inserir(NodeTree *raiz, int dado){
+
+// FUNÇÕES PARA ESTRUTURAS
+
+Pessoa criarPessoa(){
+    Pessoa p;
+    cout << endl << "Digite o nome: ";
+    cin >> p.nome;
+    cout << endl << "Digite o CPF: ";
+    cin >>p.cpf;
+    return p;
+}
+
+void imprimirPessoa(Pessoa p){
+    cout << endl << "Nome: " << p.nome << endl << "CPF: " << p.cpf << endl;
+}
+
+NodeTree* inserir(NodeTree *raiz, Pessoa p){
     if (raiz == NULL){
         NodeTree *ptr = new NodeTree;
-        ptr->dado = dado;
+        ptr->pessoa = p;
         ptr->esquerda = NULL;
         ptr->direita = NULL;
         return ptr;
     } else {
-        if (dado < raiz->dado){
-            raiz->esquerda = inserir(raiz->esquerda, dado);
+        if (p.cpf < raiz->pessoa.cpf){
+            raiz->esquerda = inserir(raiz->esquerda, p);
         } else {
-            raiz->direita = inserir(raiz->direita, dado);
+            raiz->direita = inserir(raiz->direita, p);
         }
         return raiz;
     }
 }
 
-void inserirEficiente(NodeTree **raiz, int dado){
+void inserirEficiente(NodeTree **raiz, Pessoa p){
     if (*raiz == NULL){
         *raiz = new NodeTree;
-        (*raiz)->dado = dado;
+        (*raiz)->pessoa = p;
         (*raiz)->esquerda = NULL;
         (*raiz)->direita = NULL;
     } else {
-        if (dado < (*raiz)->dado){
-            inserirEficiente(&((*raiz)->esquerda), dado);
+        if (p.cpf < (*raiz)->pessoa.cpf){
+            inserirEficiente(&((*raiz)->esquerda), p);
         } else {
-            inserirEficiente(&((*raiz)->direita), dado);
+            inserirEficiente(&((*raiz)->direita), p);
         }
     }
 }
 
-void inserirMaisEficiente(NodeTree **raiz, int dado){
+void inserirMaisEficiente(NodeTree **raiz, Pessoa p){
     NodeTree *ptr = *raiz;
     while (ptr != NULL){
-        if (dado < ptr->dado){
+        if (p.cpf < ptr->pessoa.cpf){
             raiz = &ptr->esquerda;
         } else {
             raiz = &ptr->direita;
@@ -142,30 +167,30 @@ void inserirMaisEficiente(NodeTree **raiz, int dado){
         ptr = *raiz;
     }
     ptr = new NodeTree;
-    ptr->dado = dado;
+    ptr->pessoa = p;
     ptr->esquerda = NULL;
     ptr->direita = NULL;
     *raiz = ptr;
 }
 
-NodeTree* search(NodeTree* raiz, int dado){
+NodeTree* search(NodeTree* raiz, int cpf){
     if (raiz != NULL){
-        if (dado == raiz->dado){
+        if (cpf == raiz->pessoa.cpf){
             return raiz;
-        } else if (dado < raiz->dado){
-            return search(raiz->esquerda, dado);
+        } else if (cpf < raiz->pessoa.cpf){
+            return search(raiz->esquerda, cpf);
         } else {
-            return search(raiz->direita, dado);
+            return search(raiz->direita, cpf);
         }
     }
     return NULL;
 }
 
-NodeTree* searchEficiente(NodeTree* raiz, int dado){
+NodeTree* searchEficiente(NodeTree* raiz, int cpf){
     while (raiz != NULL){
-        if (dado < raiz->dado){
+        if (cpf < raiz->pessoa.cpf){
             raiz = raiz->esquerda;
-        } else if (dado > raiz->dado){
+        } else if (cpf > raiz->pessoa.cpf){
             raiz = raiz->direita;
         } else {
             return raiz;
@@ -213,7 +238,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
         cout << "Valor nao encontrado!" << endl;
         return NULL;
     } else { // procura o nó a remover
-        if (raiz->dado == chave){
+        if (raiz->pessoa.cpf == chave){
             // remove nós folhas sem filhos
             if (raiz->esquerda == NULL && raiz->direita == NULL){
                 free(raiz);
@@ -222,12 +247,14 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
             } else {
                 // remover nós que possuem 2 filhos
                 if (raiz->esquerda != NULL && raiz->direita != NULL){
+                    Pessoa p;
                     NodeTree *ptr = raiz->esquerda;
                     while (ptr->direita != NULL){
                         ptr = ptr->direita;
                     }
-                    raiz->dado = ptr->dado;
-                    ptr->dado = chave;
+                    p = raiz->pessoa;
+                    raiz->pessoa = ptr->pessoa;
+                    ptr->pessoa = p;
                     cout << endl << "Elemento trocado: " << chave << "!" << endl;
                     raiz->esquerda = removerNode(raiz->esquerda, chave);
                     return raiz;
@@ -245,7 +272,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
                 }
             }
         } else {
-            if (chave < raiz->dado){
+            if (chave < raiz->pessoa.cpf){
                 raiz->esquerda = removerNode(raiz->esquerda, chave);
             } else {
                 raiz->direita = removerNode(raiz->direita, chave);
@@ -257,7 +284,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
 
 void imprimirPreorder(NodeTree *raiz){
     if (raiz != NULL){
-        cout << raiz->dado << " ";
+        imprimirPessoa(raiz->pessoa);
         imprimirPreorder(raiz->esquerda);
         imprimirPreorder(raiz->direita);
     }
@@ -266,7 +293,7 @@ void imprimirPreorder(NodeTree *raiz){
 void imprimirInorder(NodeTree *raiz){
     if (raiz != NULL){
         imprimirInorder(raiz->esquerda);
-        cout << raiz->dado << " ";
+        imprimirPessoa(raiz->pessoa);
         imprimirInorder(raiz->direita);
     }
 }
@@ -275,6 +302,6 @@ void imprimirPostorder(NodeTree *raiz){
     if (raiz != NULL){
         imprimirPostorder(raiz->esquerda);
         imprimirPostorder(raiz->direita);
-        cout << raiz->dado << " ";
+        imprimirPessoa(raiz->pessoa);
     }
 }
