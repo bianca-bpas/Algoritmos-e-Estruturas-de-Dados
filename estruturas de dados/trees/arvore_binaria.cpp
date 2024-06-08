@@ -26,6 +26,9 @@ int quantidadeNodes(NodeTree *raiz);
 // verificar quantidade de folhas na árvore
 int quantidadeFolhas(NodeTree *raiz);
 
+// remover nó (folha)
+NodeTree* removerNode(NodeTree* raiz, int chave);
+
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
@@ -39,7 +42,7 @@ int main(){
     NodeTree *busca = NULL;
     int opcao, valor;
     do{
-        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl << "3 - Buscar" << endl << "4 - Altura" << endl << "5 - Tamanho" << endl  << "6 - Folhas" << endl << endl;
+        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl << "3 - Buscar" << endl << "4 - Altura" << endl << "5 - Tamanho" << endl  << "6 - Folhas" << endl << "7 - Remover" << endl << endl;
         cin >> opcao;
 
         switch (opcao){
@@ -75,6 +78,14 @@ int main(){
             break;
         case 6:
             cout << endl << "Quantidade de folhas: " << quantidadeFolhas(raiz) << endl;
+            break;
+        case 7:
+            cout << endl;
+            imprimirInorder(raiz);
+            cout << endl;
+            cout << endl << "Digite o valor a ser removido: ";
+            cin >> valor;
+            raiz = removerNode(raiz, valor);
             break;
         default:
             if (opcao != 0){
@@ -194,6 +205,53 @@ int quantidadeFolhas(NodeTree *raiz){
         return 1;
     } else {
         return quantidadeFolhas(raiz->esquerda) + quantidadeFolhas(raiz->direita);
+    }
+}
+
+NodeTree* removerNode(NodeTree* raiz, int chave){
+    if (raiz == NULL){
+        cout << "Valor nao encontrado!" << endl;
+        return NULL;
+    } else { // procura o nó a remover
+        if (raiz->dado == chave){
+            // remove nós folhas sem filhos
+            if (raiz->esquerda == NULL && raiz->direita == NULL){
+                free(raiz);
+                cout << "Elemento folha removido: " << chave << "!" << endl;
+                return NULL;
+            } else {
+                // remover nós que possuem 2 filhos
+                if (raiz->esquerda != NULL && raiz->direita != NULL){
+                    NodeTree *ptr = raiz->esquerda;
+                    while (ptr->direita != NULL){
+                        ptr = ptr->direita;
+                    }
+                    raiz->dado = ptr->dado;
+                    ptr->dado = chave;
+                    cout << endl << "Elemento trocado: " << chave << "!" << endl;
+                    raiz->esquerda = removerNode(raiz->esquerda, chave);
+                    return raiz;
+                } else {
+                    // remover nós que possuem apenas 1 filho
+                    NodeTree *ptr;
+                    if (raiz->esquerda != NULL){
+                        ptr = raiz->esquerda;
+                    } else {
+                        ptr = raiz->direita;
+                    }
+                    free(raiz);
+                    cout << endl << "Elemento com 1 filho removido: " << chave << "!" << endl;
+                    return ptr;
+                }
+            }
+        } else {
+            if (chave < raiz->dado){
+                raiz->esquerda = removerNode(raiz->esquerda, chave);
+            } else {
+                raiz->direita = removerNode(raiz->direita, chave);
+            }
+            return raiz;
+        }
     }
 }
 
