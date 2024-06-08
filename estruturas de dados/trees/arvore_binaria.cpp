@@ -22,6 +22,9 @@ NodeTree* searchEficiente(NodeTree* raiz, int dado);
 // verificar altura da árvore
 int alturaTree(NodeTree *raiz);
 
+// verificar quantidade de nós na árvore
+int quantidadeNodes(NodeTree *raiz);
+
 // raiz-esquerda-direita
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
@@ -32,51 +35,51 @@ void imprimirPostorder(NodeTree *raiz);
 
 int main(){
     NodeTree *raiz = NULL;
-    raiz = inserir(raiz, 10);
-    raiz = inserir(raiz, 40);
-    raiz = inserir(raiz, 20);
-    raiz = inserir(raiz, 30);
-    inserirEficiente(&raiz, 70);
-    inserirEficiente(&raiz, 60);
-    inserirMaisEficiente(&raiz, 90);
-    inserirMaisEficiente(&raiz, 80);
-    cout << "Preorder (raiz-esquerda-direita):" << endl;
-    imprimirPreorder(raiz);
-    cout << endl << "Inorder (esquerda-raiz-direita)" << endl;
-    imprimirInorder(raiz);
-    cout << endl << "Postorder (esquerda-direita-raiz)" << endl;
-    imprimirPostorder(raiz);
-    NodeTree* busca = search(raiz, 40);
-    cout << endl;
-    if (busca != NULL){
-        cout << "Valor encontrado: " << busca->dado << endl;
-    } else {
-        cout << "Valor nao encontrado! " << endl;
-    }
+    NodeTree *busca = NULL;
+    int opcao, valor;
+    do{
+        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl << "3 - Buscar" << endl << "4 - Altura" << endl << "5 - Tamanho" << endl << endl;
+        cin >> opcao;
 
-    busca = search(raiz, 45);
-    if (busca != NULL){
-        cout << "Valor encontrado: " << busca->dado << endl;
-    } else {
-        cout << "Valor 45 nao encontrado!" << endl;
-    }
+        switch (opcao){
+        case 1:
+            cout << endl << "Digite um valor: ";
+            cin >> valor;
+            inserirMaisEficiente(&raiz, valor);
+            break;
+        case 2:
+            cout << endl << "Preorder:" << endl;
+            imprimirPreorder(raiz);
+            cout << endl << "Inorder:" << endl;
+            imprimirInorder(raiz);
+            cout << endl << "Postorder:" << endl;
+            imprimirPostorder(raiz);
+            cout << endl;
+            break;
+        case 3:
+            cout << endl << "Digite o valor a ser procurado: ";
+            cin >> valor;
+            busca = searchEficiente(raiz, valor);
+            if (busca != NULL){
+                cout << endl << "Valor encontrado: " << busca->dado << endl;
+            } else {
+                cout << endl << "Valor nao encontrado!" << endl;
+            }
+            break;
+        case 4:
+            cout << endl << "Altura da arvore: " << alturaTree(raiz) << endl;
+            break;
+        case 5:
+            cout << endl << "Quantidade de nos: " << quantidadeNodes(raiz) << endl;
+            break;
+        default:
+            if (opcao != 0){
+                cout << endl << "Opcao invalida!!!" << endl;
+            }
+        }
 
-    busca = searchEficiente(raiz, 70);
-    if (busca != NULL){
-        cout << "Valor encontrado: " << busca->dado << endl;
-    } else {
-        cout << "Valor 70 nao encontrado!" << endl;
-    }
+    } while (opcao != 0);
 
-    busca = searchEficiente(raiz, 75);
-    if (busca != NULL){
-        cout << "Valor encontrado: " << busca->dado << endl;
-    } else {
-        cout << "Valor 75 nao encontrado!" << endl;
-    }
-
-    int a = alturaTree(raiz);
-    cout << "Altura da arvore: " << a << endl;
     return 0;
 }
 
@@ -168,6 +171,16 @@ int alturaTree(NodeTree *raiz){
             return dir +1;
         }
     }
+}
+
+int quantidadeNodes(NodeTree *raiz){
+    if (raiz == NULL){
+        return 0;
+    } else {
+        return (1 + quantidadeNodes(raiz->esquerda) + quantidadeNodes(raiz->direita));      
+    }
+    // implementando com operador ternário
+    return (raiz ==NULL) ? 0 : (1 + quantidadeNodes(raiz->esquerda) + quantidadeNodes(raiz->direita));
 }
 
 
