@@ -3,10 +3,10 @@ using namespace std;
 
 typedef struct NodeTree{
     int dado;
-    struct NodeTree *direita;
-    struct NodeTree *esquerda;
+    NodeTree *direita;
+    NodeTree *esquerda;
     int altura;
-}NodeTree;
+} NodeTree;
 
 NodeTree* novoNode(int x){
     NodeTree* novo = new NodeTree;
@@ -71,4 +71,143 @@ NodeTree* rotacaoDireita(NodeTree* raiz){
 
     return filho_esquerda;
 
+}
+
+NodeTree* rotacaoEsquerdaDireita(NodeTree *raiz){
+    raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
+    return rotacaoDireita(raiz);
+}
+
+NodeTree* rotacaoDireitaEsquerda(NodeTree *raiz){
+    raiz->direita = rotacaoDireita(raiz->direita);
+    return rotacaoEsquerda(raiz);
+}
+
+NodeTree* balancear(NodeTree* raiz){
+    int fb = fatorBalanceamento(raiz);
+
+    if (fb < -1 && fatorBalanceamento(raiz->direita) <= 0){
+        raiz = rotacaoEsquerda(raiz);
+    } else if (fb > 1 && fatorBalanceamento(raiz->esquerda) >= 0){
+        raiz = rotacaoDireita(raiz);
+    } else if (fb > 1 && fatorBalanceamento(raiz->esquerda) < 0){
+        raiz = rotacaoEsquerdaDireita(raiz);
+    } else if (fb < -1 && fatorBalanceamento(raiz->direita) > 0){
+        raiz = rotacaoDireitaEsquerda(raiz);
+    }
+
+    return raiz;
+}
+
+NodeTree* inserir(NodeTree *raiz, int x){
+    if (raiz == NULL){
+        return novoNode(x);
+    } else {
+        if (x < raiz->dado){
+            raiz->esquerda = inserir(raiz->esquerda, x);
+        } else if (x > raiz->dado){
+            raiz->direita = inserir(raiz->direita, x);
+        } else {
+            cout << endl << "Insercao nao realizada!" << endl << "O elemento " << x << " ja existe!" << endl;
+        }
+
+        raiz->altura = maiorSubarvore(alturaNode(raiz->esquerda), alturaNode(raiz->direita)) + 1;
+        raiz = balancear(raiz);
+
+        return raiz;
+    }
+}
+
+NodeTree* removerNode(NodeTree* raiz, int chave){
+    if (raiz == NULL){
+        cout << "Valor nao encontrado!" << endl;
+        return NULL;
+    } else {
+        if (raiz->dado == chave){
+            if (raiz->esquerda == NULL && raiz->direita == NULL){
+                delete raiz;
+                cout << "Elemento folha removido: " << chave << "!" << endl;
+                return NULL;
+            } else if (raiz->esquerda != NULL && raiz->direita != NULL){
+                NodeTree *ptr = raiz->esquerda;
+                while (ptr->direita != NULL){
+                    ptr = ptr->direita;
+                }
+                raiz->dado = ptr->dado;
+                ptr->dado = chave;
+                cout << endl << "Elemento trocado: " << chave << "!" << endl;
+                raiz->esquerda = removerNode(raiz->esquerda, chave);
+            } else {
+                NodeTree *ptr;
+                if (raiz->esquerda != NULL){
+                    ptr = raiz->esquerda;
+                } else {
+                    ptr = raiz->direita;
+                }
+                delete raiz;
+                cout << endl << "Elemento com 1 filho removido: " << chave << "!" << endl;
+                return ptr;
+            }
+        } else {
+            if (chave < raiz->dado){
+                raiz->esquerda = removerNode(raiz->esquerda, chave);
+            } else {
+                raiz->direita = removerNode(raiz->direita, chave);
+            }
+        }
+
+        // Recalcula a altura de todos os nós entre a raiz e o novo nó inserido
+        raiz->altura = maiorSubarvore(alturaNode(raiz->esquerda), alturaNode(raiz->direita)) + 1;
+
+        // verifica a necessidade de rebalancear a árvore
+        raiz = balancear(raiz);
+
+        return raiz;
+    }
+}
+
+void imprimir(NodeTree *raiz, int nivel){
+    if (raiz != NULL){
+        imprimir(raiz->direita, nivel+1);
+        cout << endl << endl;
+        for (int i = 0; i < nivel; i++){
+            cout << "\t";
+        }
+        cout << raiz->dado;
+        imprimir(raiz->esquerda, nivel + 1);
+    }
+}
+
+int main(){
+    NodeTree *raiz = NULL;
+    int opcao, valor;
+    do{
+        cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl  << "3 - Remover" << endl << endl;
+        cin >> opcao;
+
+        switch (opcao){
+        case 0:
+            cout << "Finalizando..." << endl;
+            break;
+        case 1:
+            cout << endl << "Digite um valor: ";
+            cin >> valor;
+            raiz = inserir(raiz, valor);
+            break;
+        case 2:
+            imprimir(raiz, 1);
+            cout << endl << endl;
+            break;
+        case 3:
+            cout << endl << endl << "Digite o valor a ser removido: ";
+            cin >> valor;
+            raiz = removerNode(raiz, valor);
+            break;
+        default:
+            cout << endl << "Opcao invalida!!!" << endl;
+        }
+
+    } while (opcao != 0);
+
+    return 0;
 }
