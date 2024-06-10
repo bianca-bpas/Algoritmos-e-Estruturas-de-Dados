@@ -42,17 +42,33 @@ int fatorBalanceamento(NodeTree *no){
     }
 }
 
-NodeTree* rotacaoEsquerda(NodeTree* r){
-    NodeTree *y, *f;
+NodeTree* rotacaoEsquerda(NodeTree* raiz){
+    NodeTree *filho_direita, *f;
 
-    y = r->direita;
-    f = y->esquerda;
+    filho_direita = raiz->direita;
+    f = filho_direita->esquerda;
 
-    y->esquerda = r;
-    r->direita = f;
+    filho_direita->esquerda = raiz;
+    raiz->direita = f;
 
-    r->altura = maiorSubarvore(alturaNode(r->esquerda), alturaNode(r->direita)) + 1;
-    y->altura = maiorSubarvore(alturaNode(y->esquerda), alturaNode(y->direita)) + 1;
+    raiz->altura = maiorSubarvore(alturaNode(raiz->esquerda), alturaNode(raiz->direita)) + 1;
+    filho_direita->altura = maiorSubarvore(alturaNode(filho_direita->esquerda), alturaNode(filho_direita->direita)) + 1;
 
-    return y;
+    return filho_direita;
+}
+
+NodeTree* rotacaoDireita(NodeTree* raiz){
+    NodeTree *filho_esquerda, *f;
+
+    filho_esquerda = raiz->esquerda;
+    f = filho_esquerda->direita;
+
+    filho_esquerda->direita = raiz;
+    raiz->esquerda = f;
+
+    raiz->altura = maiorSubarvore(alturaNode(raiz->esquerda), alturaNode(raiz->direita)) + 1;
+    filho_esquerda->altura = maiorSubarvore(alturaNode(filho_esquerda->esquerda), alturaNode(filho_esquerda->direita)) + 1;
+
+    return filho_esquerda;
+
 }
