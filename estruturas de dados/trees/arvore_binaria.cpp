@@ -16,6 +16,7 @@ void inserirMaisEficiente(NodeTree **raiz, int dado);
 
 // busca com recursão
 NodeTree* search(NodeTree* raiz, int dado);
+NodeTree* searchNivel(NodeTree* raiz, int dado, int nivel);
 // busca sem recursão
 NodeTree* searchEficiente(NodeTree* raiz, int dado);
 
@@ -33,6 +34,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave);
 void imprimirPreorder(NodeTree *raiz);
 // esquerda-raiz-direita
 void imprimirInorder(NodeTree *raiz);
+void imprimirInorderNiveis(NodeTree *raiz, int nivel);
 // esquerda-direita-raiz
 void imprimirPostorder(NodeTree *raiz);
 
@@ -56,6 +58,8 @@ int main(){
             imprimirPreorder(raiz);
             cout << endl << "Inorder:" << endl;
             imprimirInorder(raiz);
+            cout << endl;
+            imprimirInorderNiveis(raiz, 0);
             cout << endl << "Postorder:" << endl;
             imprimirPostorder(raiz);
             cout << endl;
@@ -64,6 +68,12 @@ int main(){
             cout << endl << "Digite o valor a ser procurado: ";
             cin >> valor;
             busca = searchEficiente(raiz, valor);
+            if (busca != NULL){
+                cout << endl << "Valor encontrado: " << busca->dado << endl;
+            } else {
+                cout << endl << "Valor nao encontrado!" << endl;
+            }
+            busca = searchNivel(raiz, valor, 0);
             if (busca != NULL){
                 cout << endl << "Valor encontrado: " << busca->dado << endl;
             } else {
@@ -156,6 +166,20 @@ NodeTree* search(NodeTree* raiz, int dado){
             return search(raiz->esquerda, dado);
         } else {
             return search(raiz->direita, dado);
+        }
+    }
+    return NULL;
+}
+
+NodeTree* searchNivel(NodeTree* raiz, int dado, int nivel){
+    if (raiz != NULL){
+        if (dado == raiz->dado){
+            cout << endl << "Nivel: " << nivel << endl;
+            return raiz;
+        } else if (dado < raiz->dado){
+            return searchNivel(raiz->esquerda, dado, nivel+1);
+        } else {
+            return searchNivel(raiz->direita, dado, nivel+1);
         }
     }
     return NULL;
@@ -268,6 +292,14 @@ void imprimirInorder(NodeTree *raiz){
         imprimirInorder(raiz->esquerda);
         cout << raiz->dado << " ";
         imprimirInorder(raiz->direita);
+    }
+}
+
+void imprimirInorderNiveis(NodeTree *raiz, int nivel){
+    if (raiz != NULL){
+        imprimirInorderNiveis(raiz->esquerda, nivel + 1);
+        cout << raiz->dado << "(" << nivel << ") ";
+        imprimirInorderNiveis(raiz->direita, nivel + 1);
     }
 }
 

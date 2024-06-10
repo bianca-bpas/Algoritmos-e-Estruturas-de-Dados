@@ -1,8 +1,14 @@
 #include <iostream>
 using namespace std;
 
+typedef struct Pessoa{
+    string nome;
+    int idade;
+    int cpf;
+}Pessoa;
+
 typedef struct NodeTree{
-    int dado;
+    Pessoa *pessoa;
     NodeTree *direita;
     NodeTree *esquerda;
     int altura;
@@ -18,7 +24,7 @@ NodeTree* rotacaoDireita(NodeTree* raiz);
 NodeTree* rotacaoEsquerdaDireita(NodeTree *raiz);
 NodeTree* rotacaoDireitaEsquerda(NodeTree *raiz);
 NodeTree* balancear(NodeTree* raiz);
-NodeTree* inserir(NodeTree *raiz, int x);
+NodeTree* inserir(NodeTree *raiz, Pessoa *x);
 NodeTree* removerNode(NodeTree* raiz, int chave);
 void imprimir(NodeTree *raiz, int nivel);
 
@@ -26,6 +32,8 @@ void imprimir(NodeTree *raiz, int nivel);
 int main(){
     NodeTree *raiz = NULL;
     int opcao, valor;
+    Pessoa *p;
+
     do{
         cout << endl << "0 - Sair" << endl << "1 - Inserir" << endl << "2 - Imprimir" << endl  << "3 - Remover" << endl << endl;
         cin >> opcao;
@@ -35,16 +43,21 @@ int main(){
             cout << "Finalizando..." << endl;
             break;
         case 1:
-            cout << endl << "Digite um valor: ";
-            cin >> valor;
-            raiz = inserir(raiz, valor);
+            p = new Pessoa;
+            cout << endl << "Digite o nome: ";
+            cin >> p->nome;
+            cout << "Digite o CPF: ";
+            cin >> p->cpf;
+            cout << "Digite a idade: ";
+            cin >> p->idade;
+            raiz = inserir(raiz, p);
             break;
         case 2:
             imprimir(raiz, 1);
             cout << endl << endl;
             break;
         case 3:
-            cout << endl << endl << "Digite o valor a ser removido: ";
+            cout << endl << endl << "Digite o CPF a ser removido: ";
             cin >> valor;
             raiz = removerNode(raiz, valor);
             break;
@@ -58,11 +71,11 @@ int main(){
 }
 
 
-NodeTree* novoNode(int x){
+NodeTree* novoNode(Pessoa *x){
     NodeTree* novo = new NodeTree;
 
     if (novo != NULL){
-        novo->dado = x;
+        novo->pessoa = x;
         novo->esquerda = NULL;
         novo->direita = NULL;
         novo->altura = 0;
@@ -149,16 +162,16 @@ NodeTree* balancear(NodeTree* raiz){
     return raiz;
 }
 
-NodeTree* inserir(NodeTree *raiz, int x){
+NodeTree* inserir(NodeTree *raiz, Pessoa *x){
     if (raiz == NULL){
         return novoNode(x);
     } else {
-        if (x < raiz->dado){
+        if (x->cpf < raiz->pessoa->cpf){
             raiz->esquerda = inserir(raiz->esquerda, x);
-        } else if (x > raiz->dado){
+        } else if (x->cpf > raiz->pessoa->cpf){
             raiz->direita = inserir(raiz->direita, x);
         } else {
-            cout << endl << "Insercao nao realizada!" << endl << "O elemento " << x << " ja existe!" << endl;
+            cout << endl << "Insercao nao realizada!" << endl << "O elemento " << x->cpf << " ja existe!" << endl;
         }
 
         raiz->altura = maiorSubarvore(alturaNode(raiz->esquerda), alturaNode(raiz->direita)) + 1;
@@ -173,7 +186,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
         cout << "Valor nao encontrado!" << endl;
         return NULL;
     } else {
-        if (raiz->dado == chave){
+        if (raiz->pessoa->cpf == chave){
             if (raiz->esquerda == NULL && raiz->direita == NULL){
                 delete raiz;
                 cout << "Elemento folha removido: " << chave << "!" << endl;
@@ -183,10 +196,13 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
                 while (ptr->direita != NULL){
                     ptr = ptr->direita;
                 }
-                raiz->dado = ptr->dado;
-                ptr->dado = chave;
+                Pessoa *pessoaAux;
+                pessoaAux = raiz->pessoa;
+                raiz->pessoa = ptr->pessoa;
+                ptr->pessoa = pessoaAux;
                 cout << endl << "Elemento trocado: " << chave << "!" << endl;
                 raiz->esquerda = removerNode(raiz->esquerda, chave);
+                return raiz;
             } else {
                 NodeTree *ptr;
                 if (raiz->esquerda != NULL){
@@ -199,7 +215,7 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
                 return ptr;
             }
         } else {
-            if (chave < raiz->dado){
+            if (chave < raiz->pessoa->cpf){
                 raiz->esquerda = removerNode(raiz->esquerda, chave);
             } else {
                 raiz->direita = removerNode(raiz->direita, chave);
@@ -216,6 +232,10 @@ NodeTree* removerNode(NodeTree* raiz, int chave){
     }
 }
 
+void imprimirPessoa(Pessoa *pessoa){
+    cout << "Nome: " << pessoa->nome << " CPF: " << pessoa->cpf << " Idade: " << pessoa->idade << endl;
+}
+
 void imprimir(NodeTree *raiz, int nivel){
     if (raiz != NULL){
         imprimir(raiz->direita, nivel+1);
@@ -223,7 +243,7 @@ void imprimir(NodeTree *raiz, int nivel){
         for (int i = 0; i < nivel; i++){
             cout << "\t";
         }
-        cout << raiz->dado;
+        imprimirPessoa(raiz->pessoa);
         imprimir(raiz->esquerda, nivel + 1);
     }
 }
