@@ -2,80 +2,107 @@
 #include <iostream>
 using namespace std;
 
-typedef struct NodeTree{
-    int dado;
-    struct NodeTree *esquerda;
-    struct NodeTree *direita;
-}NodeTree;
+typedef struct BSTNode{
+    int key;
+    int element;
+    BSTNode *left;
+    BSTNode *right;
+}BSTNode;
 
-NodeTree* insere(NodeTree *raiz, int dado);
-void imprimirPreorder(NodeTree *raiz);
-void imprimirInorder(NodeTree *raiz);
-void imprimirPostorder(NodeTree *raiz);
+BSTNode* create_bstnode(int k, int e);
+
+typedef struct BST{
+    BSTNode *root;
+    int nodecount;
+}BST;
+
+
+BST* create_bst();
+void insert(BST *bst, int k, int e);
+BSTNode* inserthelp(BSTNode *rt, int k, int e);
+void preorder(BSTNode *rt);
+void inorder(BSTNode* rt);
+void postorder(BSTNode *rt);
 
 
 int main(){
-    NodeTree *raiz = NULL;
-    long int n; // número de operações
-    string operacao;
-    long long int numero;
+    int n; // número de operações
+    string op;
+    int x;
+    BST* bst = create_bst();
     cin >> n;
     for (int i = 0; i < n; i++){
-        cin >> operacao;
-        if (operacao == "insert"){
-            cin >> numero;
-            raiz = insere(raiz, numero);
-        } else if (operacao == "pre"){
-            imprimirPreorder(raiz);
+        cin >> op;
+        if (op == "insert"){
+            cin >> x;
+            insert(bst, x, x);
+        } else if (op == "pre"){
+            preorder(bst->root);
             cout << endl;
-        } else if (operacao == "in"){
-            imprimirInorder(raiz);
+        } else if (op == "in"){
+            inorder(bst->root);
             cout << endl;
-        } else if (operacao == "post"){
-            imprimirPostorder(raiz);
+        } else if (op == "post"){
+            postorder(bst->root);
             cout << endl;
         }
     }
 
+    return 0;
 }
 
-NodeTree* insere(NodeTree *raiz, int dado){
-    if (raiz == NULL){
-        NodeTree *ptr = new NodeTree;
-        ptr->dado = dado;
-        ptr->esquerda = NULL;
-        ptr->direita = NULL;
-        return ptr;
+BSTNode* create_bstnode(int k, int e){
+    BSTNode *n = new BSTNode;
+    n->key = k;
+    n->element = e;
+    n->left = n->right = NULL;
+    return n;
+}
+
+BST* create_bst(){
+    BST * bst = new BST;
+    bst->root = NULL;
+    bst->nodecount = 0;
+    return bst;
+}
+
+void insert(BST *bst, int k, int e){
+    bst->root = inserthelp(bst->root, k, e);
+    bst->nodecount++;
+}
+
+BSTNode* inserthelp(BSTNode *rt, int k, int e){
+    if (rt == NULL){
+        return create_bstnode(k, e);
+    }
+    if (rt->key > k){
+        rt->left = inserthelp(rt->left, k, e);
     } else {
-        if (dado < raiz->dado){
-            raiz->esquerda = insere(raiz->esquerda, dado);
-        } else {
-            raiz->direita = insere(raiz->direita, dado);
-        }
-        return raiz;
+        rt->right = inserthelp(rt->right, k, e);
+    }
+    return rt;
+}
+
+void preorder(BSTNode *rt){
+    if (rt != NULL){
+        cout << rt->element << " ";
+        preorder(rt->left);
+        preorder(rt->right);
     }
 }
 
-void imprimirPreorder(NodeTree *raiz){
-    if (raiz != NULL){
-        cout << raiz->dado << " ";
-        imprimirPreorder(raiz->esquerda);
-        imprimirPreorder(raiz->direita);
+void inorder(BSTNode* rt){
+    if (rt != NULL){
+        inorder(rt->left);
+        cout << rt->element << " ";
+        inorder(rt->right);
     }
 }
 
-void imprimirInorder(NodeTree *raiz){
-    if (raiz != NULL){
-        imprimirInorder(raiz->esquerda);
-        cout << raiz->dado << " ";
-        imprimirInorder(raiz->direita);
-    }
-}
-
-void imprimirPostorder(NodeTree *raiz){
-    if (raiz != NULL){
-        imprimirPostorder(raiz->esquerda);
-        imprimirPostorder(raiz->direita);
-        cout << raiz->dado << " ";
+void postorder(BSTNode *rt){
+    if (rt != NULL){
+        postorder(rt->left);
+        postorder(rt->right);
+        cout << rt->element << " ";
     }
 }

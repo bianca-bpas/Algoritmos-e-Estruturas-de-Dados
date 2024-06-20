@@ -1,1 +1,41 @@
-/* Você foi contratado para desenvolver um sistema de gerenciamento de uma biblioteca. Neste sistema, você precisa implementar uma estrutura de dados de árvore binária para organizar os livros no catálogo da biblioteca. Cada livro possui um identificador único e um título. O sistema deve permitir a inserção de novos livros, a busca de livros pelo seu identificador e a remoção de livros do catálogo. Além disso, você precisa implementar uma função que calcule a altura da árvore binária, que indica o número máximo de níveis na árvore, fornecendo uma ideia da profundidade do catálogo da biblioteca. */
+#include <iostream>
+using namespace std;
+
+typedef struct Produto{
+    int ID;
+    string nome;
+    float preco;
+}Produto;
+
+typedef struct Node{
+    Produto produto;
+    struct Node *esquerda;
+    struct Node *direita;
+}Node;
+
+typedef struct ArvoreBinaria{
+    Node *raiz = NULL;
+    int altura = 0;
+}ArvoreBinaria;
+
+// LIDANDO COM AS ESTRUTURAS
+Produto criarProduto(){
+    Produto p;
+    cin >> p.ID >> p.nome >> p.preco;
+    return p;
+}
+
+void imprimirProduto(Produto p){
+    cout << endl << "ID: " << p.ID << endl << "Nome: " << p.nome << endl << "Preco: " << p.preco << endl;
+}
+
+// CRIANDO NOVO Nó
+Node* criarNode(Produto *x){
+    Node *ptr = new Node;
+    if (ptr != NULL){
+        ptr->produto = x;
+        ptr->esquerda = NULL;
+        ptr->direita = NULL;
+        ptr.
+    }
+}

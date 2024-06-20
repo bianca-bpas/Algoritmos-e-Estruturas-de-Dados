@@ -3,11 +3,11 @@
 #include <sstream>
 using namespace std;
 
-typedef struct Node {
+typedef struct Node{
     int frequencia_cardiaca;
     struct Node* esquerda;
     struct Node* direita;
-} Node;
+}Node;
 
 typedef struct ArvoreBinaria {
     Node *raiz = NULL;
