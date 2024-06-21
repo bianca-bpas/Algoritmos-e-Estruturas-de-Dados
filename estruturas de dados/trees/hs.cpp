@@ -13,13 +13,13 @@ void criaHeap(int *H, int i, int f){
             i = j;
             j = 2*i+1;
         } else {
-            j = f+1;
+            j = f + 1;
         }
     }
     H[i] = aux;
 }
 
-void heapSort(int*H, int n){
+void heapSort(int *H, int n){
     for (int i = (n-1)/2; i >= 0; i--){
         criaHeap(H, i, n-1);
     }
