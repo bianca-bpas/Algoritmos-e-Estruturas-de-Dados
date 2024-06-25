@@ -1,72 +1,71 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-void criaHeap(int *H, int i, int f);
-void heapSort(int*H, int n);
-int minimumCost(int *H, int n);
+void criaHeap(vector<int>& H, int i, int f) {
+    int raiz = i;
+    int filho_esquerda = 2*i+1;
+    int filho_direita = 2*i+2;
 
-int main(){
-    int N;
-    cin >> N;
-    while (N != 0){
-        int *H = new int[N];
-        
-        for (int i = 0; i < N; i++){
-            cin >> H[i];
+    if (filho_esquerda < f && H[filho_esquerda] < H[raiz]) {
+        raiz = filho_esquerda;
+    }
+    if (filho_direita < f && H[filho_direita] < H[raiz]) {
+        raiz = filho_direita;
+    }
+    if (raiz != i) {
+        swap(H[i], H[raiz]);
+        criaHeap(H, raiz, f);
+    }
+}
+
+void heapSort(vector<int>& H) {
+    int n = H.size();
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        criaHeap(H, i, n);
+    }
+}
+
+int minimumCost(vector<int>& H) {
+    heapSort(H);
+    int custo_total = 0;
+
+    while (H.size() > 1) {
+        int primeiro = H[0];
+        swap(H[0], H[H.size() - 1]);
+        H.pop_back();
+        criaHeap(H, 0, H.size());
+
+        int segundo = H[0];
+        swap(H[0], H[H.size() - 1]);
+        H.pop_back();
+        criaHeap(H, 0, H.size());
+
+        int soma = primeiro + segundo;
+        custo_total += soma;
+
+        H.push_back(soma);
+        int i = H.size() - 1;
+        while (i != 0 && H[(i - 1) / 2] > H[i]) {
+            swap(H[i], H[(i - 1) / 2]);
+            i = (i - 1) / 2;
         }
-        int cost = minimumCost(H, N);
-        cout << cost << endl; 
+    }
 
-        delete[] H;
+    return custo_total;
+}
 
-        cin >> N;
+int main() {
+    int N;
+    while (cin >> N && N != 0) {
+        vector<int> numeros(N);
+        for (int i = 0; i < N; i++) {
+            cin >> numeros[i];
+        }
+
+        int cost = minimumCost(numeros);
+        cout << cost << endl;
     }
 
     return 0;
-}
-
-void criaHeap(int *H, int i, int f){
-    int aux = H[i];
-    int j = 2*i+1;
-    while (j <= f){
-        if (j < f && H[j] < H[j+1]){
-            j++;
-        }
-        if (aux < H[j]){
-            H[i] = H[j];
-            i = j;
-            j = 2*i+1;
-        } else {
-            j = f+1;
-        }
-    }
-    H[i] = aux;
-}
-
-void heapSort(int*H, int n){
-    for (int i = (n-1)/2; i >= 0; i--){
-        criaHeap(H, i, n-1);
-    }
-    for (int i = n-1; i > 0; i--){
-        swap(H[0], H[i]);
-        criaHeap(H, 0, i-1);
-    }
-}
-
-int minimumCost(int *H, int n){
-    heapSort(H, n);
-    int tot_cost = 0;
-    int sum = H[0] + H[1];
-    int cost = sum;
-    tot_cost += cost;
-
-    int i = 2;
-    while (i < n){
-        sum = cost + H[i];
-        cost = sum;
-        tot_cost += cost;
-        i++;
-    }
-
-    return tot_cost;
 }
