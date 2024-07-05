@@ -1,0 +1,4 @@
+A:
+* (CORRIGIDO) Problema de seg fault ao setar a aresta
+* (CORRIGIDO) Adiciona arestas repetidas
+* seg fault ao chamar a função que encontra o menor caminho
