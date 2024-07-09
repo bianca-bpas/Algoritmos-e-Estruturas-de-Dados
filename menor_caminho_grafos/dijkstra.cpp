@@ -86,27 +86,27 @@ struct compareTripla {
     }
 };
 
-void Dijkstra(Graph* G, int vertice) {
-    for (int i = 0; i < G->numVertices; i++) {
-        G->distance[i] = infinite;
-    }
+void Dijkstra(Graph *G, int s){
     priority_queue<Tripla, vector<Tripla>, compareTripla> minHeap;
-    minHeap.push(Tripla(vertice, vertice, 0));
-    G->distance[vertice] = 0;
+    minHeap.push(Tripla(s, s, 0));
+    G->distance[s] = 0;
 
     for (int i = 0; i < G->numVertices; i++) {
-        do{
+        int p;
+        int v;
+        do {
+            if (minHeap.empty()) {
+                return;
+            }
             Tripla top = minHeap.top();
             minHeap.pop();
             int p = top.vertice1;
-            int v = top.vertice2;
-            if (v == NULL){
-                return;
-            }
-        } while (getMark(G, v, "UNVISITED"));
+            v = top.vertice2;
+        } while (getMark(*G, v) == "VISITED");
 
         setMark(G, v, "VISITED");
         G->predecessor[v] = p;
+
         int w = first(*G, v);
         while (w < G->numVertices) {
             if (getMark(*G, w) != "VISITED" && G->distance[w] > G->distance[v] + weight(*G, v, w)) {
@@ -117,6 +117,7 @@ void Dijkstra(Graph* G, int vertice) {
         }
     }
 }
+
 
 int main() {
     int numVertices, numArestas, vertice;
