@@ -11,8 +11,8 @@ struct Graph {
     vector<vector<int>> matrix;
     int numEdge;
     int numVertices;
-    vector<vector<int>> distance;
-    vector<int> predecessor;
+    vector<vector<int>> distances;
+    vector<int> predecessors;
 };
 
 Graph* create_graph(int n) {
@@ -21,8 +21,8 @@ Graph* create_graph(int n) {
     g->matrix.resize(n, vector<int>(n, 0));
     g->numEdge = 0;
     g->numVertices = n;
-    g->distance.resize(n, vector<int>(n));
-    g->predecessor.resize(n, -1); // Inicializar com -1 para indicar ausência de predecessor
+    g->distances.resize(n, vector<int>(n));
+    g->predecessors.resize(n, -1); // Inicializar com -1 para indicar ausência de predecessors
     return g;
 }
 
@@ -41,31 +41,31 @@ void setEdge(Graph* g, int i, int j, int wt) {
     }
 }
 
-int weight(const Graph& g, int i, int j) {
-    return g.matrix[i][j];
+int weight(Graph *g, int i, int j) {
+    return g->matrix[i][j];
 }
 
 void Floyd_Warshall(Graph *g){
+  for (int i = 0; i < g->numVertices; i++){
+    for (int j = 0; j < g->numVertices; j++){
+      if (i == j){
+        g->distances[i][j] = weight(g, i, j);
+      } else if (weight(g, i, j) != 0){
+        g->distances[i][j] = weight(g, i, j);
+      } else {
+        g->distances[i][j] = infinite;
+      }
+    }
+  }
+  for (int k = 0; k < g->numVertices; k++){
     for (int i = 0; i < g->numVertices; i++){
-        for (int j = 0; j < g->numVertices; j++){
-            if (i == j){
-                g->distance[i][j] = 0;
-            } else if (weight(*g, i, j) != 0){
-                g->distance[i][j] = weight(*g, i, j);
-            } else {
-                g->distance[i][j] = infinite;
-            }
+      for (int j = 0; j < g->numVertices; j++){
+        if (g->distances[i][k] != infinite && g->distances[k][j] != infinite && g->distances[i][j] > g->distances[i][k] + g->distances[k][j]){
+          g->distances[i][j] = g->distances[i][k] + g->distances[k][j];
         }
+      }
     }
-    for (int k = 0; k < g->numVertices; k++){
-        for (int i = 0; i < g->numVertices; i++){
-            for (int j = 0; j < g->numVertices; j++){
-                if (g->distance[i][k] != infinite && g->distance[k][j] != infinite && g->distance[i][j] > g->distance[i][k] + g->distance[k][j]){
-                    g->distance[i][j] = g->distance[i][k] + g->distance[k][j];
-                }
-            }
-        }
-    }
+  }
 }
 
 int main() {
@@ -84,10 +84,10 @@ int main() {
     // Imprimir a matriz de distâncias
     for (int i = 0; i < numVertices; i++) {
         for (int j = 0; j < numVertices; j++) {
-            if (g->distance[i][j] == infinite) {
+            if (g->distances[i][j] == infinite) {
                 cout << "INF ";
             } else {
-                cout << g->distance[i][j] << " ";
+                cout << g->distances[i][j] << " ";
             }
         }
         cout << endl;

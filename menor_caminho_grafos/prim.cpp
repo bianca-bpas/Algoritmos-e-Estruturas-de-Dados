@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <limits.h>
-
+#include <climits>
+#include <queue>
+#include <tuple>
 using namespace std;
 
 const int infinite = INT_MAX;
@@ -12,7 +13,8 @@ struct Graph {
     int numEdge;
     int numVertices;
     vector<int> distances;
-    vector<int> predecessor;
+    vector<int> predecessors;
+    vector<int> vMST;
 };
 
 Graph* create_graph(int n) {
@@ -22,7 +24,8 @@ Graph* create_graph(int n) {
     g->numEdge = 0;
     g->numVertices = n;
     g->distances.resize(n, infinite);
-    g->predecessor.resize(n, -1); // Inicializar com -1 para indicar ausência de predecessor
+    g->predecessors.resize(n, -1); // Inicializar com -1 para indicar ausência de predecessors
+    g->vMST.resize(n, -1);
     return g;
 }
 
@@ -35,6 +38,7 @@ void setEdge(Graph* g, int i, int j, int wt) {
             g->numEdge++;
         }
         g->matrix[i][j] = wt;
+        g->matrix[j][i] = wt; // Por ser um grafo não-dirigido
     } else {
         cout << "Erro: índice fora do limite" << endl;
     }
@@ -42,6 +46,14 @@ void setEdge(Graph* g, int i, int j, int wt) {
 
 int weight(Graph *g, int i, int j) {
     return g->matrix[i][j];
+}
+
+void setMark(Graph* g, int v, string val) {
+    g->Mark[v] = val;
+}
+
+string getMark(Graph *g, int v) {
+    return g->Mark[v];
 }
 
 int first(Graph *g, int v) {
@@ -62,32 +74,34 @@ int next(Graph *g, int v, int w) {
     return g->numVertices;
 }
 
-void BellmanFord(Graph *g, int s){
-  for (int i = 0; i < g->numVertices; i++){
-    g->distances[i] = infinite;
-    g->distances[s] = 0;
-  }
-  int j;
-  for (int k = 0; k < g->numVertices-1; k++){
+void Prim(Graph *g){
+    priority_queue<
+        tuple<int, int, int>,
+        vector<tuple<int, int, int>>,
+        greater<tuple<int, int, int>>
+    > minHeap;
+    minHeap.push(make_tuple(0, 0, 0));
+    g->distances[0] = 0;
+    int p;
+    int v;
     for (int i = 0; i < g->numVertices; i++){
-      j = first(g, i);
-      while (j < g->numVertices){
-        if (g->distances[j] > g->distances[i] + weight(g, i, j)){
-          g->distances[j] = g->distances[i] + weight(g, i, j);
-        } 
-        j = next(g, i, j);
-      }
+        do {
+            tuple <int, int, int> top = minHeap.top();
+            p = get<1>(top);
+            v = get<2>(top);
+            minHeap.pop();
+        } while (getMark(g, v) == "VISITED");
+        setMark(g, v, "VISITED");
+        g->vMST[v] = p;
+        int w = first(g, v);
+        while (w < g->numVertices){
+            if (getMark(g, w) != "VISITED" && g->distances[w] > weight(g, v, w)){
+                g->distances[w] = weight(g, v, w);
+                minHeap.push(make_tuple(g->distances[w], v, w));
+            }
+            w = next(g, v, w);
+        }
     }
-  }
-  for (int i = 0; i < g->numVertices; i++){
-    j = first(g, i);
-    while (j < g->numVertices){
-      if (g->distances[j] > g->distances[i] + weight(g, i, j)){
-        cout << "Negative cycle detected" << endl;
-      }
-      j = next(g, i, j);
-    }
-  }
 }
 
 int main() {
@@ -101,21 +115,19 @@ int main() {
         setEdge(g, a, b, w);
     }
 
-    int source;
-    cout << "Enter the source vertex: ";
-    cin >> source;
+    Prim(g);
 
-    BellmanFord(g, source);
-
-    // Imprimir as distâncias
+    int sum = 0;
     for (int i = 0; i < numVertices; i++) {
         if (g->distances[i] == infinite) {
-            cout << "INF ";
+            cout << -1 << " ";
         } else {
             cout << g->distances[i] << " ";
+            sum += g->distances[i];
         }
     }
     cout << endl;
+    cout << "Soma das distâncias: " << sum << endl;
 
     delete g;
     return 0;
