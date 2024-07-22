@@ -4,7 +4,7 @@ using namespace std;
 
 /* O problema das N rainhas consiste em encontrar um posicionamento para N rainhas em um tabuleiro de dimensões N x N, de forma que nenhuma delas consiga, de acordo com as regras do xadrez, se atacar. Dado N, encontre todas as soluções possíveis para o problema das N rainhas para esse tabuleiro. */
 
-bool valid(vector<vector<int>>& M, int row, int col) {
+bool valid(vector<vector<int>> M, int row, int col) {
     int n = M.size();
     
     // Verifica a coluna

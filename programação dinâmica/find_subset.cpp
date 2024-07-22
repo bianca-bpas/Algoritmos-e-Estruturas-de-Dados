@@ -5,7 +5,8 @@ using namespace std;
 /* Dado o conjunto C de inteiros, encontre um subconjunto de C cuja soma de seus elementos é igual a S.
  */
 
-bool findSubset(vector<int>& C, int n, int S, vector<int>& subset, int index = 0) {
+bool findSubset(vector<int> C, int S, vector<int>& subset, int index) {
+    int n = C.size();
     if (S == 0) {
         return true;
     }
@@ -14,12 +15,12 @@ bool findSubset(vector<int>& C, int n, int S, vector<int>& subset, int index = 0
     }
 
     subset.push_back(C[index]);
-    if (findSubset(C, n, S - C[index], subset, index + 1)) {
+    if (findSubset(C, S - C[index], subset, index + 1)) {
         return true;
     }
     subset.pop_back();
 
-    if (findSubset(C, n, S, subset, index + 1)) {
+    if (findSubset(C, S, subset, index + 1)) {
         return true;
     }
 
@@ -38,7 +39,7 @@ int main() {
     }
 
     vector<int> subset;
-    if (findSubset(C, n, S, subset)) {
+    if (findSubset(C, S, subset, 0)) {
         for (int num : subset) {
             cout << num << " ";
         }
