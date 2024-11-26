@@ -1,13 +1,16 @@
 #include <iostream>
-#include <iomanip>
+#include <ctime>
 using namespace std;
 
-int main(){
-    double v1 = 0.123456, v2 = 23.987,  v3 = -123.456;
+int main() {
+struct tm *ptr;
+time_t sec;
 
-    cout << left << setw(15) << v1 << endl;
-    cout << right << setw(12) << fixed << setprecision(2) << v2 << endl;
-    cout << setw(10) << scientific << setprecision(4) << v3 << endl;
+time(&sec);
+ptr = localtime(&sec);
 
-    return 0;
+cout << "Today is the " << ptr->tm_yday + 1
+        << ". day of the year " << ptr->tm_year
+        << endl;
+
 }
