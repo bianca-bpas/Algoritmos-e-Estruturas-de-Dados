@@ -5,8 +5,8 @@ using namespace std;
 
 int main(){
     // added the two lines below
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);   
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);   
     
     int n, k, t;
     int cnt = 0;
