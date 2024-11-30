@@ -1,3 +1,7 @@
+SEMPRE USAR:
+#define endl '\n'
+sync_io
+
 ## QUESTÃO K
 -- A complexidade está no for da função winner,
 ele executa as comparações de 2 a vetor.size() vezes o
@@ -10,10 +14,10 @@ M chamadas para uma função O(N), logo a complexidade é
 O(MN)
 
 Somando as complexidades 
-O(N + MN) ~ O(MN)
+O(N + MN) ~ O(MN), pois O(MN) > O(N), e como ele é dado pelo maior valor, vira O(MN)
 O(2.10⁵ * 2.10⁵) = O(4.10¹⁰)
  
- C++: 10⁷ a 10⁹ operações por segundo
+ C++: 10⁷ a 10⁹ (convenciona 10⁸) operações por segundo
  Python: 10⁶ a 10⁸ operações por segundo
  
  Tentar: Manter o maior valor e a posição do maior valor
