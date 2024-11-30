@@ -1,0 +1,25 @@
+## QUESTÃO K
+-- A complexidade está no for da função winner,
+ele executa as comparações de 2 a vetor.size() vezes o
+que dá O(N);
+-- Na main é realizado a definição e inicialização do 
+vetor, O(N+1) ~ O(N)
+
+No for da chamada para a função winner, são realizadas
+M chamadas para uma função O(N), logo a complexidade é
+O(MN)
+
+Somando as complexidades 
+O(N + MN) ~ O(MN)
+O(2.10⁵ * 2.10⁵) = O(4.10¹⁰)
+ 
+ C++: 10⁷ a 10⁹ operações por segundo
+ Python: 10⁶ a 10⁸ operações por segundo
+ 
+ Tentar: Manter o maior valor e a posição do maior valor
+ aualizados dinamicamente à medida que as atualizações no
+ vetor A acontecem. Isso pode evitar a necessidade de
+ percorrer todo o vetor a cada atualização, reduzindo a
+ complexidade para O(1) por atualização, resultando em uma
+ complexidade total de O(M) ~2.10⁵, o que provavelmente
+ passaria de boa em Python.
