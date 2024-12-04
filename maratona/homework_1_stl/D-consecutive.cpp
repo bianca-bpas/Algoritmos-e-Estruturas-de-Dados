@@ -3,24 +3,27 @@
 using namespace std;
 
 int main(){
-    int tamanho, queries, left, right, contagem;
-    char letter;
+    int tamanho, queries, left, right;
     cin >> tamanho >> queries;
 
-    vector <char> S;
-    for (int i = 0; i < tamanho; i++){
-        cin >> letter;
-        S.push_back(letter);
+    string palavra; cin >> palavra;
+    vector<int> prefixSum;
+
+    prefixSum.push_back(0);
+    for (int i = 1; i < palavra.length(); i++){
+        if (palavra[i] == palavra[i-1]){
+            prefixSum.push_back(1);
+        } else {
+            prefixSum.push_back(0);
+        }
     }
 
     for (int i = 0; i < queries; i++){
         cin >> left >> right;
-        contagem = 0;
-        for (int j = left; j <= right; j+=2){
-            if (S[j] == S[j-1]){
-                contagem++;
-            }
-        }
+        auto itLeft = prefixSum.begin() + left;
+        auto itRight = prefixSum.begin() + right;
+
+        int contagem = accumulate(itLeft, itRight, 0);
         cout << contagem << endl;
     }
 

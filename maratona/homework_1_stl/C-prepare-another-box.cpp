@@ -3,16 +3,16 @@
 using namespace std;
 
 int main(){
-    int N, toy, box; cin >> N;
-    long long buy;
+    long long N, toy, box; cin >> N;
+    long long buy=-1;
     priority_queue<long long> A, B;
 
-    for (int i = 0; i < N; i++){
+    for (long long i = 0; i < N; i++){
         cin >> toy;
         A.push(toy);
     }
 
-    for (int j = 0; j < N-1; j++){
+    for (long long j = 0; j < N-1; j++){
         cin >> box;
         B.push(box);
     }
@@ -20,7 +20,16 @@ int main(){
     while (!B.empty()){
         if (B.top() >= A.top()){
             A.pop(); B.pop();
-        } else {
+        } else if (B.top() < A.top()) {
+            B.push(A.top());
+            if (B.size() <= A.size()){
+                buy = A.top();
+            } else {
+                buy = -1;
+                break;
+            }
+        }
+        if (B.empty() && buy == -1){
             B.push(A.top());
             if (B.size() <= A.size()){
                 buy = A.top();

@@ -6,21 +6,30 @@ int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
-    string S, s_right, s_left;
+    string S;
     cin >> S;
-    int pos = 0;
-    pos = S.find("ABC");
+    deque<char> aux;
 
-    while (pos != -1){
-        s_right = S.substr(pos+3);
-        s_left = S.substr(0, pos);
+    aux.push_back(S[0]); 
+    if (S.size() > 1){
+        aux.push_back(S[1]);
 
-        S = s_left+s_right;
-        
-        pos = S.find("ABC");
+        for (int i = 2; i < S.size(); i++){
+            aux.push_back(S[i]);
+            if (aux.size() >= 3){
+                if (aux[aux.size()-3] == 'A' && aux[aux.size()-2] == 'B' && aux.back() == 'C'){
+                    aux.pop_back(); aux.pop_back(); aux.pop_back();
+                }
+            }
+        }
     }
 
-    cout << S << endl;
+    string res;
+    for (int i = 0; i < aux.size(); i++){
+        res.push_back(aux[i]);
+    }
+
+    cout << res << endl;
 
     return 0;
 }
