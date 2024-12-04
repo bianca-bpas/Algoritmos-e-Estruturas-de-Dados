@@ -24,8 +24,8 @@ int main(){
             sequence[songs[song]].first = song;
             sequence[songs[song]].second += sequence[songs[song-1]].second;
         } else {
-            auto next = ++it;
-            next->second = 1;
+            int idx = it->first;
+            sequence[songs[idx+1]].second = 0;
             song = it->first;
             sequence.erase(songs[song]);
 
@@ -34,9 +34,9 @@ int main(){
 
     pair<int, int> maxValue = {0, 0};
     
-    for (map<int, int>::iterator atual = sequence.begin(); atual != sequence.end(); atual++){
-        if (atual->second > maxValue.second){
-            maxValue = {atual->first, atual->second};
+    for (auto atual = sequence.begin(); atual != sequence.end(); atual++){
+        if (atual->second.second > maxValue.second){
+            maxValue = {atual->first, atual->second.second};
         }
     }
 
