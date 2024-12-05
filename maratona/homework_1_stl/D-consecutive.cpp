@@ -12,18 +12,24 @@ int main(){
     prefixSum.push_back(0);
     for (int i = 1; i < palavra.length(); i++){
         if (palavra[i] == palavra[i-1]){
-            prefixSum.push_back(1);
+            prefixSum.push_back(prefixSum[i-1]+1);
         } else {
-            prefixSum.push_back(0);
+            prefixSum.push_back(prefixSum[i-1]);
         }
     }
 
     for (int i = 0; i < queries; i++){
         cin >> left >> right;
-        auto itLeft = prefixSum.begin() + left;
-        auto itRight = prefixSum.begin() + right;
+        
+        if (prefixSum[left-1] != prefixSum[left]){
+            left--;
+        }
+        if(prefixSum[right-1] != prefixSum[right]){
+            right--;
+        } 
 
-        int contagem = accumulate(itLeft, itRight, 0);
+        int contagem = prefixSum[right] - prefixSum[left];
+        
         cout << contagem << endl;
     }
 
