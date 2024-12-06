@@ -2,45 +2,42 @@
 #define endl "\n"
 using namespace std;
 
-int main(){
+int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int n, k, maior; cin >> n;
-    vector<int> songs;
-    // chave     idx   value
-    map<int, pair<int, int>> sequence;
+    int n, k;
+    cin >> n;
 
-    for (int i = 0; i < n; i++){
+    vector<int> numbers;
+    map<int, bool> visited;
+    unordered_map<int, int> last_seen;
+
+    for (int i = 0; i < n; i++) {
         cin >> k;
-        songs.push_back(k);
+        numbers.push_back(k);
+        visited[k] = false;
     }
 
-    sequence[songs[0]].first = 0;
-    sequence[songs[0]].second++;                                                                                                                                                                                                                                                               
-    for (int song = 1; song < n; song++){
-        auto it = sequence.find(songs[song]);
-        if(it != sequence.end()){
-            sequence[songs[song]].first = song;
-            sequence[songs[song]].second += sequence[songs[song-1]].second;
+    int maximum = 1;
+    visited[numbers[0]] = true;
+    last_seen[numbers[0]] = 0;
+
+    for (int j = 1; j < n; j++) {
+        if (!visited[numbers[j]]) {
+            maximum++;
+            visited[numbers[j]] = true;
+            last_seen[numbers[j]] = j;
         } else {
-            int idx = it->first;
-            sequence[songs[idx+1]].second = 0;
-            song = it->first;
-            sequence.erase(songs[song]);
-
+            int distancia = last_seen[numbers[j]] - j;
+            if (distancia >= maximum){
+                maximum = distancia;
+                last_seen[numbers[j]] = j;
+            }
         }
     }
 
-    pair<int, int> maxValue = {0, 0};
-    
-    for (auto atual = sequence.begin(); atual != sequence.end(); atual++){
-        if (atual->second.second > maxValue.second){
-            maxValue = {atual->first, atual->second.second};
-        }
-    }
-
-    cout << maxValue.second << endl;
+    cout << maximum << endl;
 
     return 0;
 }

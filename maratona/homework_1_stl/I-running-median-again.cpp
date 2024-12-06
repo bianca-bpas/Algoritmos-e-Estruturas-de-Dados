@@ -1,33 +1,47 @@
-#include <bits/stdc++.h>
-#define endl "\n"
-using namespace std;
+    #include <bits/stdc++.h>
+    #define endl "\n"
+    using namespace std;
 
-int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    int main(){
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
 
-    long long casos, n=-2, mediana, idx; cin >> casos;
-    multiset<long long> lista;
+        long long casos, n; cin >> casos;
+        priority_queue<long long> left; priority_queue<long long, vector<long long>, greater<long long>> right;
 
-    for (long long caso = 0; caso < casos; caso++){
-        while (n != 0){
-            cin >> n;
-            if (n > 0){
-                lista.insert(n);
-            } else if (n == -1){
-                if (!lista.empty()){
-                    vector<long long> l(lista.begin(), lista.end());
-                    idx = floor(((l.size()-1)/2));
-                    mediana = (l[idx]);
-                    l.erase(l.begin()+idx);
-                    cout << mediana << endl;
-                    multiset<long long> temp(l.begin(), l.end());
-                    lista = temp;
+        for (long long caso = 0; caso < casos; caso++){
+            n=-2;
+            while (n != 0){
+                cin >> n;
+                if (n > 0){
+                    if (left.empty() || n <= left.top()){
+                        left.push(n);
+                    } else {
+                        right.push(n);
+                    }
+                } else if (n == -1){
+                    if (left.size() >= right.size()){
+                        cout << left.top() << endl;
+                        left.pop();
+                    } else {
+                        cout << right.top() << endl;
+                        right.pop();
+                    }  
+                }
+                if (left.size() > right.size() + 1){
+                    right.push(left.top()); left.pop();
+                } else if (right.size() > left.size()){
+                    left.push(right.top()); right.pop();
                 }
             }
-
+            while (!left.empty()){
+                left.pop();
+            }
+                
+            while (!right.empty()) {
+                right.pop();
+                }
         }
-    }
 
-    return 0;
-}
+        return 0;
+    }
