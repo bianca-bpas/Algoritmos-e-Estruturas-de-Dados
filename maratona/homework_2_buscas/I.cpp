@@ -12,11 +12,24 @@ int main(){
     for (int precos = 0; precos < num_lojas; precos++){
         cin >> precos_lojas[precos];
     }
+
     cin >> num_days;
     for (int day = 0; day < num_days; day++){
         cin >> moedas[day];
     }
 
-    // moedas.size() - lower_bound()
+    for (int moeda = 0; moeda < moedas.size(); moeda++){
+        auto maior_que_moeda = upper_bound(precos_lojas.begin(), precos_lojas.end(), moedas[moeda]);
+        int num_possibles;
+
+        if (maior_que_moeda != precos_lojas.end()){
+            num_possibles = precos_lojas.size() - *maior_que_moeda;
+        } else {
+            num_possibles = 0;
+        }
+
+        cout << num_possibles << endl;
+    }
+
     return 0;
 }
