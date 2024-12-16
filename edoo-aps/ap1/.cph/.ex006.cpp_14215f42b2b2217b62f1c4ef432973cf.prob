@@ -1,0 +1,1 @@
+{"name":"Local: ex006","url":"d:\\Arquivos\\UFPE\\EDOO\\APs\\ap1\\ex006.cpp","tests":[{"id":1734288018075,"input":"4\n1 2 3 10\n","output":"Average = 4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Arquivos\\UFPE\\EDOO\\APs\\ap1\\ex006.cpp","group":"local","local":true}
