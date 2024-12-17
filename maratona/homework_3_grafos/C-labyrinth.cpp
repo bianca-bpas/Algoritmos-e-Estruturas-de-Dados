@@ -77,8 +77,8 @@ int main() {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             cin >> g.grid[i][j];
-            if (g.grid[i][j] == 'S') start = {i, j}; // Posição de partida
-            if (g.grid[i][j] == 'E') end = {i, j}; // Posição de chegada
+            if (g.grid[i][j] == 'A') start = {i, j}; // Posição de partida
+            if (g.grid[i][j] == 'B') end = {i, j}; // Posição de chegada
         }
     }
 
