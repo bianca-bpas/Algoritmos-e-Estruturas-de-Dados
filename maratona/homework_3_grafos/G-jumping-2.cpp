@@ -1,62 +1,51 @@
-#include <iostream>
-#include <vector>
-#include <queue>
+#include <bits/stdc++.h>
+#define endl "\n"
 using namespace std;
 
-void BFS(int N, vector<int>& d, vector<int>& saltos) {
-    queue<int> q;
-    vector<bool> visited(N, false);
+int calcularSaltos(vector<int>& next, int start, int N) {
+    int atual = start;
+    int saltos = 0;
+    vector<bool> visitado(N, false);
 
-    q.push(0); // Começa no índice 0
-    saltos[0] = 0;
-    visited[0] = true;
+    while (atual < N-1) {
+        // Se já visitou este ponto, ciclo detectado
+        if (visitado[atual]) return -1;
+        
+        visitado[atual] = true;
 
-    while (!q.empty()) {
-        int current = q.front();
-        q.pop();
-
-        int max_jump = min(N - 1, current + d[current]);
-
-        for (int next = current + 1; next <= max_jump; ++next) {
-            if (!visited[next]) {
-                visited[next] = true;
-                saltos[next] = saltos[current] + 1;
-                q.push(next);
-            }
-        }
+        // Próximo salto
+        atual = next[atual];
+        
+        // Verifica se ultrapassou o array
+        if (atual >= N) return -1;
+        
+        saltos++;
     }
 
-    // Atualiza índices não alcançáveis
-    for (int i = 0; i < N; ++i) {
-        if (!visited[i]) {
-            saltos[i] = -1;
-        }
-    }
+    return saltos;
 }
 
-int main() {
+int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
+    freopen("jumping.in", "r", stdin);
 
-    int T;
-    cin >> T;
-
-    while (T--) {
-        int N;
-        cin >> N;
-
-        vector<int> d(N);
-        for (int i = 0; i < N; ++i) {
+    int T; cin >> T;
+    for (int caso = 0; caso < T; caso++){
+        int N; cin >> N;
+        vector<int> d(N), next(N);
+        
+        for (int i = 0; i < N; i++){
             cin >> d[i];
+            next[i] = i + d[i];
         }
 
-        vector<int> saltos(N, -1);
-        BFS(N, d, saltos);
-
-        for (int i = 0; i < N; ++i) {
-            cout << saltos[i] << endl;
+        for (int i = 0; i < N; i++){
+            cout << calcularSaltos(next, i, N) << endl;
         }
     }
 
+
+    fclose(stdin);
     return 0;
 }
