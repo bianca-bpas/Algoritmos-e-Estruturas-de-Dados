@@ -1,0 +1,42 @@
+Assuntos vistos até agora:
+SEMANA 1
+* STL e PS
+- Complexidade
+- STL (vector, deque, stack, queue, priority queue, set, multiset, map, unordered set, map e multiset, pair, tuple, array, sort, reverse, unique, upper e lower bound)
+- Prefix Sum (subarray com soma k, stack monotônica)
+
+SEMANA 2
+* Greedy
+- Bruteforce
+- Backtracking
+- Busca Binária
+- Busca Binária na resposta
+- Subset Sum
+- Meet in the Middle
+- Two Sum
+
+SEMANA 3
+* Grafo
+- Percorrer Grid
+- DFS
+- BFS, BFS em grid, BFS multisorce
+- Bicolorability
+- Topological Sort - Algoritmo de Kahn
+- Ciclos
+- Diâmetro de Árvore
+- Flood Fill
+
+SEMANA 4
+* Operações em Árvores
+- Árvore da DFS
+- Small to Large
+
+* Árvore Geradora Mínima
+- Prim
+- Kruskal
+- DSU (disjoint set union)
+
+* Menor Caminho
+- Bellman-Ford
+- Dijkstra
+- Floyd-Warshall
