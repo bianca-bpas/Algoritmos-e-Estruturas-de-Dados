@@ -1,91 +1,78 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-class Queue {
-    private:
-        struct Node {
-            char element;
-            Node* next;
+template <typename T>
+class Stack {
+private:
+    struct Node {
+        T element;
+        Node* next;
+        Node(T it, Node* nextval = nullptr) : element(it), next(nextval) {}
+    };
 
-            Node(char& it, Node* nextval) : next(nextval), element(it) {}
+    Node* top;
+    int size;
 
-            Node(Node* nextval) : next(nextval) {}
+public:
+    Stack() : top(nullptr), size(0) {}
 
-            ~Node() = default;
-        };
-
-        Node* front;
-        Node* rear;
-        char size;
-
-    public:
-        Queue() : front(new Node(nullptr)), rear(new Node(nullptr)), size(0) {}
-
-        ~Queue() = default;
-
-        void enqueue(char it) {
-            rear->next = new Node(it, nullptr);
-            rear = rear->next;
-            if (front->next == nullptr) {
-                front->next = rear;
-            }
-            size++;
+    ~Stack() {
+        while (top != nullptr) {
+            Node* temp = top;
+            top = top->next;
+            delete temp;
         }
-
-        char* deque() {
-            if (size == 0) {
-                size--;
-                return nullptr;
-            }
-            char it = front->next->element;
-            front->next = front->next->next;
-            if (front->next == nullptr){
-                rear = front;
-            }
-            size--;
-            return &it;
-        }
-
-        char* frontValue(){
-            if (size == 0){
-                return nullptr;
-            }
-            return &front->next->element;
-        }
-
-        int length(){
-            return size;
-        }
-};
-
-int main(){
-    int n;
-    cin >> n;
-
-    for (int i = 0; i < n; i++){
-        Queue parenteses;
-        Queue colchetes;
-        string s;
-        cin >> s;
-        for (int j = 0; j < s.length(); j++){
-            if (s[j] == '('){
-                parenteses.enqueue(')');
-            } else if (s[j] == '['){
-                colchetes.enqueue(']');
-            } else if (s[j] == ')'){
-                parenteses.deque();
-            } else if (s[j] == ']'){
-                colchetes.deque();
-            }
-        }
-
-        if (parenteses.length() != 0 || colchetes.length() != 0){
-            cout << "No" << endl;
-        } else {
-            cout << "Yes" << endl;
-        }
-
     }
 
+    void push(T it) {
+        top = new Node(it, top);
+        size++;
+    }
+
+    T pop() {
+        if (top == nullptr) {
+            // Esse retorno não deve ocorrer se a verificação de pilha vazia for feita corretamente
+            return 'e';
+        }
+        T it = top->element;
+        Node* temp = top;
+        top = top->next;
+        delete temp;
+        size--;
+        return it;
+    }
+
+    bool isEmpty() const {
+        return size == 0;
+    }
+};
+
+bool is_correct(const string &s) {
+    Stack<char> stack;
+    for (char c : s) {
+        if (c == '(' || c == '[') {
+            stack.push(c);
+        } else if (c == ')' || c == ']') { // Só processa caracteres de fechamento
+            if (stack.isEmpty())
+                return false;
+            char top = stack.pop();
+            if ((c == ')' && top != '(') || (c == ']' && top != '['))
+                return false;
+        }
+    }
+    return stack.isEmpty();
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cin.ignore(); // Descarta o '\n' após ler o número de casos
+    for (int i = 0; i < n; i++) {
+        string s;
+        getline(cin, s); // Lê a linha inteira, permitindo espaços se houver
+        cout << (is_correct(s) ? "Yes" : "No") << endl;
+    }
     return 0;
 }
+
