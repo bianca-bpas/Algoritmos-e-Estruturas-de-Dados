@@ -1,6 +1,8 @@
 #ifndef HASH_TABLE_HPP
 #define HASH_TABLE_HPP
 
+#include "complete_linked_list.hpp"
+
 template <typename Key, typename Value>
 class HashTable {
     private:
@@ -16,9 +18,9 @@ class HashTable {
         }; 
 
         static const int m = 101; // tamanho fixo da tabela
-        Pair* table[m]; // array de ponteiros para Pair 
         int count; // quantidade de elementos válidos na tabela
-
+        LinkedList<Pair>* table[m];
+        //Pair* table[m]; // array de ponteiros para Pair 
         static Pair* DELETED; // ponteiro para marcar posições removidas
 
         // trivial
@@ -77,12 +79,56 @@ class HashTable {
 
             return abs(sum) % m;
         }
-
-        // COLLISION RESOLUTION
-        // Open Hashing (separete chaining)
-        // Closed Hashing (open addressing)
     
     public:
+        HashTable() : count(0) {
+            for (int i = 0; i < m; i++){
+                table[i] = new LinkedList<Pair>(); 
+            }
+        }
+        ~HashTable() = default;
+        // ------- COLLISION RESOLUTION -------
+        // Open Hashing (seperate chaining)
+        // -- Each address is associated with a linked list
+        template <typename Key, typename E>
+        void insert(Key k, E e){
+            // compute h(K) = j, insert in the j-th linked list, 
+                // list is sorted: better search, worse insertion, 
+                // for unsorted lists: worse search, better insertion
+            // assuming the lists are not sorted and always insert in the end
+            if (search(k) == nullptr){
+                int pos = hashFunction(k);
+                auto l = table[pos];
+                Pair* pair = new Pair(k, e);
+                l.push_back(pair);
+            }
+        }
+
+        template <typename Key>
+        bool search(Key k){
+            // compute h(K) = j, if the j-th linked list is empty, element not found, otherwise, search the linked list
+            int j = hashFunction(k);
+            auto lista = table[j];
+            Node* curr = lista.front();
+            while (curr != nullptr){
+                if (curr->data == k){
+                    return true;
+                } else {
+                    curr = curr->next;
+                }
+            }
+            return false;
+        }
+
+        void delete(){
+            // compute h(K) = j, remove from the j-th linked list
+        }
+
+
+
+        // Closed Hashing (open addressing)
+
+
         https://chatgpt.com/c/67bd9655-9a30-8011-8490-87e5e44195d1 @cin
         // Construtor: inicializa todos os slots como vazios (nullptr)
         // Destrutor: libera a memória dos elementos armazenados.
