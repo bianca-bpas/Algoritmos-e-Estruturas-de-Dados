@@ -30,7 +30,7 @@ class HashTable {
 
         void insert(string k, string e){
             int idx = fold(k);
-            if (H[idx] == ""){
+            if (H[idx] == "" || H[idx] == "DELETED"){
                 H[idx] = e;
                 cnt++;
             } else {
@@ -38,7 +38,7 @@ class HashTable {
                 int i = 1;
                 while (i < m) {
                     int newIdx = (idx + i) % m;
-                    if (H[newIdx] == "") {
+                    if (H[newIdx] == "" || H[newIdx] == "DELETED") {
                         H[newIdx] = e;
                         cnt++;
                         break;
@@ -48,25 +48,61 @@ class HashTable {
             }
         }
 
-        
+        void remove(string k){
+            int idx = fold(k);
+            int i = 0;
+
+            int s = search(k);
+            if (s != -1){
+                H[s] = "DELETED";
+                cnt--;
+            }
+        }
+
+        int search(string k) {
+            int idx = fold(k);
+            int i = 0;
+            
+            while (i < m) {
+                int currIdx = (idx + i) % m;
+                
+                if (H[currIdx] == "") {
+                    return -1;
+                }
+                
+                if (H[currIdx] == k) {
+                    return currIdx;
+                }
+                
+                i++;
+            }
+            
+            return -1;
+        }
+
 };
 
 int main(){
     int m;
     cin >> m;
     
+    HashTable table(m);
     string op, x;
     while (cin >> op && op != "fim"){
         cin >> x;
         if (op == "add"){
-
+            table.insert(x, x);
         } else if (op == "rmv"){
-
+            table.remove(x);
         } else if (op == "sch"){
-
+            int s = table.search(x);
+            if (s != -1) {
+                cout << x << " " << s << endl;
+            } else {
+                cout << x << " " << -1 << endl;
+            }
         }
     }
-
 
     return 0;
 }
