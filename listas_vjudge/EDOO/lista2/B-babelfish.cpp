@@ -27,6 +27,7 @@ class HashTable {
         void insert(string k, string v){
             int idx = h(k);
             if (H[idx].first == "" || H[idx].first == "DELETED"){
+                H[idx].first = k;
                 H[idx].second = v;
                 cnt++;
             } else {
@@ -34,6 +35,7 @@ class HashTable {
                 while (i < m){
                     int newIdx = (idx + i) % m;
                     if (H[newIdx].first == "" || H[newIdx].first == "DELETED"){
+                        H[newIdx].first = k;
                         H[newIdx].second = v;
                         cnt++;
                         break;
@@ -44,29 +46,31 @@ class HashTable {
         }
 
         string find(string key){
-            int idx = h(key);
+            int idx = h(key);  // Fixed: was using 'k' instead of 'key'
             int i = 0;
 
             while (i < m){
                 int currIdx = (idx + i) % m;
 
                 if (H[currIdx].first == ""){
+                    // Empty slot means key was never inserted
                     return "NOT FOUND";
                 }
 
                 if (H[currIdx].first == key){
                     return H[currIdx].second;
                 }
+                
+                // Continue probing
                 i++;
             }
             return "NOT FOUND";
         }
-
 };
 
 
 int main(){
-    HashTable table(3);
+    HashTable table(100001);
     string line;
     while (getline(cin, line) && !line.empty()){
         string word, key, value;
