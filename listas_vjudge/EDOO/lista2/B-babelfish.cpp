@@ -4,69 +4,52 @@
 #include <vector>
 using namespace std;
 
-class HashTable {
+class HashTable{
     private:
         int m;
         int cnt;
-        vector<pair<string, string>> H;
+        vector<vector<pair<string, string>>> H;
 
-        int h(string key){
-            int s = key.length();
+        int fold(string k){
+            int s = k.length();
             int sum = 0;
+
             for (int i = 0; i < s; i++){
-                sum += key[i];
+                sum += k[i];
             }
             return abs(sum)%m;
         }
+
     public:
         HashTable(int size) : m(size), cnt(0) {
-            H.resize(m, {"", ""});
+            H.resize(m, vector<pair<string, string>>(1, pair<string, string>({"", ""})));
         }
         ~HashTable() = default;
 
-        void insert(string k, string v){
-            int idx = h(k);
-            if (H[idx].first == "" || H[idx].first == "DELETED"){
-                H[idx].second = v;
-                cnt++;
-            } else {
-                int i = 1;
-                while (i < m){
-                    int newIdx = (idx + i) % m;
-                    if (H[newIdx].first == "" || H[newIdx].first == "DELETED"){
-                        H[newIdx].second = v;
-                        cnt++;
-                        break;
-                    }
-                    i++;
+        string find(string k){
+            int idx = fold(k);
+
+            for (auto [key, value] : H[idx]){
+                if (key == k){
+                    return value;
                 }
             }
+            return "eh";
         }
 
-        string find(string key){
-            int idx = h(key);
-            int i = 0;
-
-            while (i < m){
-                int currIdx = (idx + i) % m;
-
-                if (H[currIdx].first == ""){
-                    return "NOT FOUND";
-                }
-
-                if (H[currIdx].first == key){
-                    return H[currIdx].second;
-                }
-                i++;
+        void insert(string k, string e){
+            if (find(k) == "eh"){
+                int idx = fold(k);
+                H[idx].push_back({k, e});
+                cnt++;
             }
-            return "NOT FOUND";
         }
 
 };
 
 
 int main(){
-    HashTable table(3);
+    HashTable table(5);
     string line;
     while (getline(cin, line) && !line.empty()){
         string word, key, value;
