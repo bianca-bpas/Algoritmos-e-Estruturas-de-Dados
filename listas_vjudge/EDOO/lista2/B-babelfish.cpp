@@ -8,14 +8,26 @@ class HashTable{
         int cnt;
         vector<vector<pair<string, string>>> H;
 
-        int fold(string k){
-            int s = k.length();
-            int sum = 0;
-
-            for (int i = 0; i < s; i++){
-                sum += k[i];
+        int sfold(string key){
+            int intLength = key.length() / 4;
+            long long sum = 0;
+            for (int i = 0; i < intLength; i++) {
+                string part = key.substr(i * 4, 4);
+                long long mult = 1;
+                for (int j = 0; j < part.length(); j++) {
+                    sum += part[j] * mult;
+                    mult *= 256;
+                }
             }
-            return abs(sum)%m;
+
+            string remaining = key.substr(intLength * 4);
+            long long mult = 1;
+            int s = remaining.length();
+            for (int j = 0; j < s; j++) {
+                sum += remaining[j] * mult;
+                mult *= 256;
+            }
+            return abs(sum) % m;
         }
 
     public:
@@ -25,7 +37,7 @@ class HashTable{
         ~HashTable() = default;
 
         string find(string k){
-            int idx = fold(k);
+            int idx = sfold(k);
 
             for (auto par : H[idx]){
                 string key = par.first;
@@ -38,9 +50,8 @@ class HashTable{
         }
 
         void insert(string k, string e){
-            
             if (find(k) == "eh"){
-                int idx = fold(k);
+                int idx = sfold(k);
                 H[idx].push_back({k, e});
                 cnt++;
             }
@@ -49,6 +60,9 @@ class HashTable{
 
 
 int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    
     HashTable table(100000);
     string line;
     while (getline(cin, line) && !line.empty()){
