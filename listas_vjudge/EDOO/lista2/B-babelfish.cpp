@@ -1,5 +1,3 @@
-// recebe até 100.000 entrada, uma newline e n palavras de busca key-value
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -22,14 +20,16 @@ class HashTable{
 
     public:
         HashTable(int size) : m(size), cnt(0) {
-            H.resize(m, vector<pair<string, string>>(1, pair<string, string>({"", ""})));
+            H.resize(m);
         }
         ~HashTable() = default;
 
         string find(string k){
             int idx = fold(k);
 
-            for (auto [key, value] : H[idx]){
+            for (auto par : H[idx]){
+                string key = par.first;
+                string value = par.second;
                 if (key == k){
                     return value;
                 }
@@ -38,6 +38,7 @@ class HashTable{
         }
 
         void insert(string k, string e){
+            
             if (find(k) == "eh"){
                 int idx = fold(k);
                 H[idx].push_back({k, e});
@@ -48,7 +49,7 @@ class HashTable{
 
 
 int main(){
-    HashTable table(5);
+    HashTable table(100000);
     string line;
     while (getline(cin, line) && !line.empty()){
         string word, key, value;
@@ -61,7 +62,7 @@ int main(){
             }
         }
         value = word;
-        table.insert(key, value);
+        table.insert(value, key);
     }
 
     while (cin >> line){
